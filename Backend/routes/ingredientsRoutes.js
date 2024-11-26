@@ -6,14 +6,19 @@ const mongoose = require('mongoose');
 const ingredientSchema = new mongoose.Schema({
     name: { type: String, required: true },
     stock: { type: Number, required: true },
-  }, { 
-    versionKey: false // Disables the `__v` field
-  });
+}, { 
+    versionKey: false // Disables the __v field
+});
 
 const Ingredient = mongoose.model('Ingredient', ingredientSchema);
 
+// Simple test route
+router.get('/', (req, res) => {
+    res.json({ message: 'Ingredients route works!' });
+});
+
 // Route: Get All Ingredients
-router.get('/', async (req, res) => {
+router.get('/all', async (req, res) => {
   try {
     const ingredients = await Ingredient.find();
     res.json(ingredients); // Send all ingredients as JSON

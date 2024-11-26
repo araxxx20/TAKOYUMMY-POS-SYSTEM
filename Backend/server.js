@@ -1,31 +1,34 @@
-require('dotenv').config();  // Load environment variables
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const account = require('./models/userModel'); // Path to your user model
+const ingredientsRoutes = require('./routes/ingredientsRoutes'); // Ingredients routes
+const userRoutes = require('./routes/users'); // User routes
 
-// Import routes
-const ingredientRoutes = require('./routes/ingredientsRoutes');
-
-// Initialize the app
 const app = express();
 
-// Middleware to parse JSON request bodies
-app.use(bodyParser.json());
+// Middleware
+app.use(express.json());
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/inventory', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.log('MongoDB connection error:', err));
+// Database connection
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        account.init().catch((error) => {
+            console.error('Error initializing account model:', error.message);
+        });
+    })
+    .catch((error) => {
+        console.error('Error connecting to MongoDB:', error.message);
+    })
 
-// Use ingredient routes
-app.use('/api/ingredients', ingredientRoutes);
+// Routes
+app.use('/api/users', userRoutes);
+app.use('/api/ingredients', ingredientsRoutes);
 
 // Start the server
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
