@@ -2,9 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-const account = require('./models/userModel'); // Path to your user model
+
 const ingredientsRoutes = require('./routes/ingredientsRoutes'); // Ingredients routes
-const userRoutes = require('./routes/users'); // User routes
+
 
 const app = express();
 
@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGO_URI)
     })
 
 // Routes
-app.use('/api/users', userRoutes);
+
 app.use('/api/ingredients', ingredientsRoutes);
 
 // Start the server
